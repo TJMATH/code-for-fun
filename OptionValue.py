@@ -75,7 +75,7 @@ def getGamma(S0 = 250, K = 225, r = 0.03681, T = 0.6, steps = 100, alpha = 0.95)
             Confidence = [Gamma[j], Gamma[j + ua]]
     E = np.mean(Gamma)
     std = np.std(Gamma)
-    plt.hist(Gamma, 50)
+    plt.hist(Gamma, round(n**1.5))
     plt.show()
     return [E, width, std * 3.92, Confidence]
 
