@@ -1,0 +1,66 @@
+format long
+
+T=0.6;
+E=225;
+r=log(1+0.0375);
+a=1;
+b=1000;
+M=100;
+N=200;
+h=(log(b)-log(a))/N;
+dt=T/M;
+theta=0;
+
+x=linspace(log(a),log(b),N+1);
+S=exp(x);
+
+sigmaT=0.17*exp(-0.004*S);
+
+
+
+g=zeros(N-1,1);
+
+u=zeros(N+1,M+1);
+u(:,M+1)=(S-E).^2;
+u(1,:)=u(1,M+1)*exp(-r*(T-linspace(0,T,M+1)));
+u(N+1,:)=u(N+1,M+1)*exp(-r*(T-linspace(0,T,M+1)));
+
+tic
+flag=M+1;
+u1=u(2:end-1,M+1);
+for t=T-dt:-dt:0
+
+    sigma1=sigmaT*exp(-1.6667*(t));
+    a1=1/dt+theta*(sigma1(2:end-1).^2/h^2+r);
+    b1=-theta*(sigma1(3:end-1).^2/(2*h^2)+(r-0.5*sigma1(3:end-1).^2)/(2*h));
+    c1=-theta*(sigma1(2:end-2).^2/(2*h^2)-(r-0.5*sigma1(2:end-2).^2)/(2*h));
+
+    sigma2=sigmaT*exp(-1.6667*(t+dt));
+    d1=1/dt-(1-theta)*(sigma2(2:end-1).^2/h^2+r);
+    e1=(1-theta)*(sigma2(3:end-1).^2/(2*h^2)+(r-0.5*sigma2(3:end-1).^2)/(2*h));
+    f1=(1-theta)*(sigma2(2:end-2).^2/(2*h^2)-(r-0.5*sigma2(2:end-2).^2)/(2*h));
+
+    A=diag(a1)+diag(b1,1)+diag(c1,-1);
+    B=diag(d1)+diag(e1,1)+diag(f1,-1);
+
+
+
+    flag=flag-1;
+    g(1)=theta*(sigma1(1)^2/(2*h^2)+(r-0.5*sigma1(1)^2)/(2*h))*u(1,flag)+(1-theta)*(sigma2(1)^2/(2*h^2)+(r-0.5*sigma2(1)^2)/(2*h))*u(1,flag+1);
+    g(end)=theta*(sigma1(end)^2/(2*h^2)+(r-0.5*sigma1(end)^2)/(2*h))*u(end,flag)+(1-theta)*(sigma2(end)^2/(2*h^2)+(r-0.5*sigma2(end)^2)/(2*h))*u(end,flag+1);
+    u1=A\(B*u1+g);
+    u(2:end-1,flag)=u1;
+end
+cpu=toc
+
+
+t=linspace(0,T,M+1);
+[tt,ss]=meshgrid(t,S);
+mesh(ss,tt,u);
+
+mm=min(abs(S-250));
+i=find(abs(S-250)==mm);
+z=[S(i-1),S(i),S(i+1)];
+f=[u(i-1,1),u(i,1),u(i+1,1)];
+p=polyfit(z,f,2);
+value=polyval(p,250);
