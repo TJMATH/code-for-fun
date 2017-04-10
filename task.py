@@ -16,7 +16,7 @@ taskFile.close()
 taskDic = dict(zip(['Month'] + WeekDays, Tasks))
 
 ToDoList = taskDic['Month'] + taskDic[WeekDay]
-if WeekDay == "Monday":
+if WeekDay == "Monday" and "健身" in ToDoList:
     ToDoList.remove("健身")
 CFA = sorted([x for x in ToDoList if "CFA" in x])
 English = sorted([x for x in ToDoList if ("TPO" in x or "背单词" in x)])
