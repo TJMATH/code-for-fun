@@ -14,8 +14,8 @@ getData <- function(n, p, beta, sigma){
   }
   s0 <- sum(beta!=0)
   if (s0 > p){
-    print('Warning: Dimension should be greater than s0. And we will force the dimension parameter equal to s0')
-    p <- s0
+    print('Warning: Dimension should be greater than s0. And we will force the dimension parameter equal to len(beta)')
+    p <- length(beta)
   }
   beta <- c(beta, rep(0,p - length(beta)))
   X <- matrix(rnorm(n * p, 0, 4), n, p)
