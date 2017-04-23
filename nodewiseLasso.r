@@ -51,7 +51,7 @@ getsigma <- function(X, Y){
   while(error > 0.01 & iter < 20){
     resid = Y - X %*% beta_hat_old
     sigma_new = sd(resid)
-    lambda_new =  lambda * sigma_new
+    lambda_new =  sqrt(2 * log(p) / n) * sigma_new
     # if set lambda_new = 2Msqrt(2(t^2 + log(p))/n) * sigma, there will be a large different between b_hat and beta,
     # also, it will penal so heavily that all beta_hatj will be zero.
     # So how to choose a suitable lambda_{0}?
@@ -63,7 +63,7 @@ getsigma <- function(X, Y){
     sigma_old = sigma_new
     iter = iter + 1
   }
-  beta_hat_new <<- as.vector(beta_hat_new)
+  beta_hat_new <- as.vector(beta_hat_new)
   return(list(sigma_hat = sigma_new, lambda_hat = lambda_new, beta_hat = beta_hat_new, error_hat = resid))
 }
 
