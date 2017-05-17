@@ -1,6 +1,7 @@
 import sys
 import math
 import time
+import numpy as np
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Bad coding example 1
@@ -34,46 +35,47 @@ import time
 
 a = 3.2
 
-time0=time.clock()
+time0 = time.clock()
 print ('Value of system clock at start = %14.4f'%time0)
 
 # Step 1 - obtain the filename of the coord file and the value of
 # cut from the command line.
 #         Argument 1 should be the filename of the coord file (char).
 #         Argument 2 should be the cut off (float).
-argv=sys.argv
+argv = sys.argv
 if len(argv) < 3:
    print ("Too few arguments")
 else:
    try:
-      filename=argv[1]
+      filename = argv[1]
       print ("Coordinates will be read from file: %s"%filename)
-      cut=float(argv[2])
+      cut = float(argv[2])
    except(TypeError,ValueError):
       print ("Input error")
 
 # Step 2 - Open the coordinate file and read the first line to
 # obtain the number of atoms
-fp=open(r'/Users/kunyang/Desktop/Codes for fun/input-10000.txt', 'r')
-natom=int(fp.readline().strip())
+fp = open(r'/Users/kunyang/Desktop/Codes for fun/input-10000.txt', 'r')
+natom = int(fp.readline().strip())
 
 print ('Natom = %d'% natom)
 print ('  cut = %10.3e'% cut)
 
 # Step 3 - Set up the arrays to store the coordinate and charge data
-coords=[[0.0 for j in range(3)] for i in range(natom)]
-q=[0]*natom
+coords = []#[[0.0 for j in range(3)] for i in range(natom)]
+q = []#[0]*natom
 
 # Step 4 - read the coordinates and charges.
-count=0
+#count = 0
 for line in fp:
-    linelist=[]
-    coords[count]=[]
-    linelist=list(map(float,line.strip().split()))
-    coords[count].extend(linelist[0:3])
-    q[count]=linelist[3]
-    count+=1
+    #linelist = []
+    #coords[count] = []
+    linelist = list(map(float,line.strip().split()))
+    coords.append(linelist[0:3])#coords[count].extend(linelist[0:3])
+    q.append(linelist[3])
+    #count += 1
 
+coords = np.array(coords)
 time1=time.clock()
 print ('Value of system clock after coord read = %14.4f'%time1)
 
@@ -81,20 +83,29 @@ print ('Value of system clock after coord read = %14.4f'%time1)
 # majority of the work.
 total_e = 0.0
 cut_count = 0
+vec2 = np.dot(coords, coords.T)
+dia = np.diag(vec2)
+vec2 = np.sqrt(np.triu((vec2.T + dia).T + dia) - np.diag(dia))
+vec2 = np.where(vec2 < cut, vec2, 0)
+vec2 = np.exp(vec2)/vec2
+total_e = np.sum(vec2)
+'''
 for i in range(natom):
-    for j in range(natom):
-        if ( j < i ):   #Avoid double counting.
-            vec2 = (coords[i][0]-coords[j][0])**2 + (coords[i][1]-coords[j][1])**2 \
-                   + (coords[i][2]-coords[j][2])**2
-            #X^2 + Y^2 + Z^2
-            rij = math.sqrt(vec2)
-            #Check if this is below the cut off
-            if ( rij <= cut ):
-              #Increment the counter of pairs below cutoff
-               cut_count+=1
-               current_e = (math.exp(rij*q[i])*math.exp(rij*q[j]))/rij
-               total_e = total_e + current_e - 1.0/a
-
+    for j in range(i):
+    #Avoid double counting.
+        rij = sum((coords[i] - coords[j])**2) ** 0.5
+        #vec2 = (coords[i][0]-coords[j][0])**2 + (coords[i][1]-coords[j][1])**2 \
+        #       + (coords[i][2]-coords[j][2])**2
+        #X^2 + Y^2 + Z^2
+        #rij = vec2 ** 0.5
+        #Check if this is below the cut off
+        if ( rij <= cut ):
+        #Increment the counter of pairs below cutoff
+            cut_count+=1
+            current_e = math.exp(rij*(q[i] + q[j])) / rij
+            total_e += current_e
+'''
+total_e -= cut_count / a
 #time after reading of file and calculation
 time2=time.clock()
 fp.close()
