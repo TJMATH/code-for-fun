@@ -243,18 +243,27 @@ real interest rate 和 real aggregate income
 - Neoclassical school
   * AD&AS的移动都是由**科技**引起的
   * 经济体有很强的趋于完全就业的趋势
+
 - Keynesian school
   * AD&AS的移动是由**预期**引起的
+  * wage are "downward sticky"(工资降不下来)
   * 主张政府干预
-  * wage are "downward sticky"
+
 - New Keynesian school
   * 同上，但是所有生产要素都"downward sticky"
+
 - Monetarist school
-  * 外部原因或内部货币供给量下降会引起紧缩
+  * 外部原因或内部货币供给量不合时宜地下降会引起紧缩
   * 货币供给应该保持一个稳定可预期的增长，**但是并不倡导用货币政策对抗经济周期**
+
 - Austrian school
   * 政府智障，经济周期都是政府瞎添乱引起的
+
 - New Classical school
+
+  real business cycle theory
+
+  * 只有科技和external shocks会影响
   * Applies utility theory to macroeconomics
   * 政府不该管
 
@@ -266,15 +275,15 @@ real interest rate 和 real aggregate income
 
 信息不对称；不严重。
 
-##### Structural unemployment
+##### ~~Structural unemployment(考纲没有了！)~~
 
-caused by long-run changes in the economy;
+~~caused by long-run changes in the economy;~~
 
-得培训
+~~得培训~~
 
-##### Cyclical unemployment
+##### ~~Cyclical unemployment(考纲没有了！)~~
 
-Caused by changes in the general level of economic activity.
+~~Caused by changes in the general level of economic activity.~~
 
 # 财报
 
